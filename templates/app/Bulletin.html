@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="page-header">
+              
+                <h1 class="page-title"> Campus Bulletin</h1>
+                <p class="page-subtitle">Latest announcements and updates from the campus</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        {% if bulletins %}
+            {% for bulletin in bulletins %}
+            <div class="col-lg-6 col-xl-4 mb-4">
+                <div class="card bulletin-card h-100">
+                    <div class="card-body">
+                        <div class="bulletin-image mb-3">
+                            <img src="{{ bulletin.image.url }}" alt="{{ bulletin.title }}" class="img-fluid rounded">
+                        </div>
+                        <h5 class="card-title">{{ bulletin.title }}</h5>
+                        {% if bulletin.description %}
+                        <p class="card-text text-muted">{{ bulletin.description }}</p>
+                        {% endif %}
+                        <div class="bulletin-meta">
+                            <small class="text-muted">
+                                Posted: {{ bulletin.created_at|date:"M d, Y" }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <h4 class="text-muted">No bulletins available</h4>
+                        <p class="text-muted">Check back later for campus announcements.</p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

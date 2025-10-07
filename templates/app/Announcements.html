@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Announcements - {{pr_short_name}} Platform{% endblock %}
+
+{% block content %}
+<div class="nk-content">
+    <div class="container-fluid">
+        <div class="nk-content-inner">
+            <div class="nk-content-body">
+                <div class="nk-block-head nk-block-head-sm">
+                    <div class="nk-block-between">
+                        <div class="nk-block-head-content">
+                            <h3 class="nk-block-title page-title">Announcements</h3>
+                            <div class="nk-block-des text-soft">
+                                <p>Important updates and notices from the administration</p>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- .nk-block-head -->
+                
+                <div class="nk-block">
+                    {% if announcements %}
+                        <div class="card card-bordered">
+                            <div class="card-inner">
+                                {% for announcement in announcements %}
+                                <div class="border-left border-{% if announcement.priority == 'urgent' %}danger{% elif announcement.priority == 'high' %}warning{% else %}primary{% endif %} pl-3 mb-4 pb-3 {% if not forloop.last %}border-bottom{% endif %}">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h5 class="mb-1">{{ announcement.title }}</h5>
+                                        <span class="badge badge-{% if announcement.priority == 'urgent' %}danger{% elif announcement.priority == 'high' %}warning{% elif announcement.priority == 'medium' %}info{% else %}secondary{% endif %}">
+                                            {{ announcement.get_priority_display }}
+                                        </span>
+                                    </div>
+                                    <p class="text-soft small mb-2">
+                                        <em class="icon ni ni-calendar"></em> 
+                                        {{ announcement.created_at|date:"F d, Y - h:i A" }}
+                                    </p>
+  <!-- ADD IMAGE DISPLAY -->
+    {% if announcement.image %}
+    <div class="announcement-image mb-3">
+        <img src="{{ announcement.image.url }}" alt="{{ announcement.title }}" 
+             class="img-fluid rounded" style="max-height: 300px; object-fit: cover;">
+    </div>
+    {% endif %}
+                                    <div class="announcement-content">
+                                        {{ announcement.content|linebreaks }}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                                
+                                <!-- Pagination -->
+                                {% if announcements.has_other_pages %}
+                                <div class="mt-4">
+                                    <nav>
+                                        <ul class="pagination justify-content-center">
+                                            {% if announcements.has_previous %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ announcements.previous_page_number }}">Previous</a>
+                                            </li>
+                                            {% endif %}
+                                            
+                                            {% for num in announcements.paginator.page_range %}
+                                                {% if announcements.number == num %}
+                                                <li class="page-item active">
+                                                    <span class="page-link">{{ num }}</span>
+                                                </li>
+                                                {% else %}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                                </li>
+                                                {% endif %}
+                                            {% endfor %}
+                                            
+                                            {% if announcements.has_next %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ announcements.next_page_number }}">Next</a>
+                                            </li>
+                                            {% endif %}
+                                        </ul>
+                                    </nav>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="card card-bordered">
+                            <div class="card-inner">
+                                <div class="text-center py-5">
+                                    <em class="icon ni ni-info text-soft" style="font-size: 3rem;"></em>
+                                    <h5 class="mt-3">No Announcements</h5>
+                                    <p class="text-soft">There are no announcements at the moment.</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div><!-- .nk-block -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

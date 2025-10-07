@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Display error messages -->
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+<section class="card p-1">
+  <div class="card-header">
+    <h4 class="card-title">Department of {{timetable.department}} Time Table {{timetable.level}} Level</h4>
+  </div>
+  <div class="table-responsive">
+  <table class="table table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      {% for time in timetable.lecture_times %}
+      <th scope="col" class="text-nowrap">{{time.format|upper}}</th>
+      {% endfor %}
+    </tr>
+  </thead>
+  <tbody>
+   {% for day, lectures in timetable.lectures_day %}
+    <tr>
+      <td scope='row'>{{day}}</td>
+          {% for lecture in lectures %}
+          {% for time in timetable.lecture_times %}
+            {% if lecture.time == time %}
+            <td>
+              <span>
+              <a href="/resource/courses/?department={{lecture.class.course.department.id}}&course={{lecture.class.course.code}}">{{lecture.class.course|upper}}</a>
+              </span>
+              <span>
+                {{lecture.class.venue}}
+              </span>
+            </td>
+            {% endif %}
+          {% endfor %}
+          {% endfor %}
+    </tr>
+   {% endfor %}
+  </tbody>
+</table>
+  </div>
+</section>
+{% endblock content %}

@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<section class="hero">
+    
+    <div>
+        <a href="{% url "material:course" %}">Courses</a>
+        <a href="{% url "material:material_list" %}">Resources</a>
+    </div>
+       <!-- <a class="btn btn-primary" href="{% url "app:representatives" %}">Representatives</a> -->
+      <a class="btn btn-primary" href="{% url 'app:representatives' %}">Representatives</a>
+    <div>
+        <p>Explore a wide array of materials, ranging from PDFs to videos, handouts, past questions, and a variety of other valuable resources, all generously provided by our community for your benefit.</p>
+    </div>
+    
+</section>
+<section class="card mt-1 sec">
+  <blockquote class="blockquote">
+   “ <b>{{pr_short_name}}</b> is a digital platform that aims to streamline academic activities. It offers a central location for students, administrators, and faculty to access resources, communicate, and engage with campus life. ”
+  </blockquote>
+  <span class="ff-italic right align-self-end text-decoration-underline">Isah Bala </span>
+</section>
+<!-- quick links -->
+<section class="card mt-1 sec">
+<span class="card-title h4 mb-3">Quick Actions.</span>
+<div class="btn-group" aria-label="Basic example">
+  <a href="{% url 'material:pqs' %}" class="btn btn-dim center btn-primary">PQs</a>
+  <a href="{% url 'material:material_list' %}" class="btn btn-dim center btn-primary">Materials</a>
+  <a href="{% url 'app:about' %}" class="btn btn-dim center btn-primary">About</a>
+</div>
+</section>
+
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5>Currently Ongoing</h5>
+        <a href="{% url 'app:ongoing' %}" class="btn btn-sm btn-outline-primary">View All</a>
+    </div>
+    <div class="card-body">
+        <div class="ongoing-preview">
+            <h6>{{ current_semester }}</h6>
+            <p class="small text-muted">{{ current_week }}</p>
+            
+            {% if ongoing_events_preview %}
+                <div class="mt-2">
+                    {% for event in ongoing_events_preview|slice:":2" %}
+                    <div class="mb-2">
+                        <strong class="small">{{ event.title }}</strong>
+                        <br>
+                        <small class="text-muted">{{ event.start_date|date:"M d" }} - {{ event.end_date|date:"M d" }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="small text-muted">No ongoing events</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Announcements Preview Section -->
+<section class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5>Announcements</h5>
+        <a href="{% url 'app:announcements' %}" class="btn btn-sm btn-outline-primary">View All</a>
+    </div>
+    <div class="card-body">
+        {% if announcements %}
+            {% for announcement in announcements %}
+            <div class="announcement-item mb-3 pb-3 {% if not forloop.last %}border-bottom{% endif %}">
+                <div class="d-flex justify-content-between align-items-start mb-1">
+                    <h6 class="mb-0">{{ announcement.title }}</h6>
+                    <span class="badge badge-sm badge-{% if announcement.priority == 'urgent' %}danger{% elif announcement.priority == 'high' %}warning{% else %}info{% endif %}">
+                        {{ announcement.get_priority_display }}
+                    </span>
+                </div>
+                <p class="small text-muted mb-1">{{ announcement.created_at|date:"M d, Y" }}</p>
+      <!-- ADD IMAGE PREVIEW -->
+                {% if announcement.image %}
+                <div class="announcement-image-preview mb-2">
+                    <img src="{{ announcement.image.url }}" alt="{{ announcement.title }}" 
+                         class="img-fluid rounded" style="max-height: 120px; object-fit: cover; width: 100%;">
+                </div>
+                {% endif %}
+                <p class="small mb-0">{{ announcement.content|truncatewords:15 }}</p>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="text-center py-3">
+                <p class="text-muted mb-2">No announcements at the moment.</p>
+                <a href="{% url 'app:announcements' %}" class="btn btn-sm btn-outline-primary">Check Announcements</a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+<!-- Bulletin Section -->
+<!-- <section class="card mt-1 sec">
+    <span class="card-title h4 mb-3"> Campus Bulletin</span>
+    <div class="bulletin-container">
+        {% if bulletins %}
+            <div class="bulletin-grid">
+                {% for bulletin in bulletins %}
+                <div class="bulletin-item">
+                    <div class="bulletin-image">
+                        <img src="{{ bulletin.image.url }}" alt="{{ bulletin.title }}" class="img-fluid rounded">
+                    </div>
+                    <div class="bulletin-content mt-2">
+                        <h6 class="bulletin-title mb-1">{{ bulletin.title }}</h6>
+                        {% if bulletin.description %}
+                        <p class="bulletin-desc small text-muted mb-0">{{ bulletin.description|truncatewords:15 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted text-center py-3">No bulletins available at the moment.</p>
+        {% endif %}
+    </div>
+</section> -->
+
+<!-- In your home template, similar to Campus Bulletin section -->
+
+<!-- blogging -->
+
+<section class="card mt-1 sec">
+<div class="">
+  <div class="d-flex flex-wrap">
+    {% include 'app/libs/service.html' with name='Repository' icon='list-index' desc='A centralized hub for all academic resources, including reading materials, past questions, and course outlines. Students can easily access and study relevant materials, preparing them for exams and assignments.' %}
+    {% include 'app/libs/service.html' with name='Arena' icon='puzzle' desc='A simulated learning environment where students can practice and test their knowledge. Students can identify their strengths and weaknesses, and improve their understanding of course concepts.' %}
+    {% include 'app/libs/service.html' with name='Nexus' icon='signal' desc='A central platform that connects students with all the necessary resources and tools. Students have a single point of access to everything they need for their academic journey.' %}
+  </div>
+</div>
+
+</section>
+<!-- sponsors -->
+{% if partners %}
+<section class="card mt-1 sec">
+  <span class="card-title h4 mb-3">Sponsors</span>
+   {% for partner in partners %}
+   <span class="user-card pb-1">
+        <span class="user-avatar h-100px w-100px">
+            <img class="bg-light" src="{{partner.image.url}}" alt="{{partner.name}}">
+        </span>
+        <span class="user-info d-flex flex-column">
+          <span class="lead-text">{{partner.name}}</span>
+       </span>
+   </span>
+   {% endfor %}
+</section>
+{% endif %}
+{% include 'app/libs/buy_tea.html' %}
+<section class="card p-2 mt-1 sec">
+<form method="post">
+   {% csrf_token %}
+  <span class="card-title h4 mb-3">Contact Form</span>
+  <p>you can drop us a message by submitting it through this form.</p>
+  <div class="form-group">
+    <label class="form-label" for="contact-01">Name or Email</label>
+    <div class="form-control-wrap">
+        <input name="name" type="text" class="form-control" id="contact-01" placeholder="Full name or Email Address">
+    </div>
+</div>
+<div class="form-group">
+    <label class="form-label" for="contact-02">Message</label>
+    <div class="form-control-wrap">
+        <textarea name="message" class="form-control" id="contact-textarea" placeholder="Start writing here"></textarea>
+    </div>
+</div>
+<div class="form-group">
+  <button class="btn btn-primary">Submit</button>
+</div>
+</form>
+</section>
+{% endblock content %}
+
+
+
+
+
+
+<div class="hero">
+    <div class="br">
+    
+        <h1>Welcome to SITENAME</h1>
+    
+        <p>Need a reading materials? worry no more, you are at the right place.</p>
+    </div>
+    <div>
+    
+        <p>You may ask, is it free? YES, its free my dear,and it's going to remained free forever!!</p>
+        <figure>
+        <img src="{% static "imgs/logo.jpg"%}" alt="">
+        <figcaption>Jagaban</figcaption>
+        </figure>
+        </div>
+    
+    <div class="br">
+        <p>You can get different kinds of materials here from pdfs to videos, handout, pass questions, useful or relevant resources and more all made available for you by the community</p>
+    </div>
+    <div class="nbr">
+            <div>There's up to 
+                <h1>10,000 +</h1> materials on this site
+            </div>
+            <div>
+                With <h1>5,000 +</h1> downloads
+            </div>
+    </div>
+    <div class="button-links">
+    
+    <p>
+      You have a useful soft copy of handout, pass questions or other important materials? you can also contribute in making this platform more helpful to we the students. Click on below button to Contribute 
+    </p>
+    
+        
+    
+    <a href="{% url "upload" %}">Contribute</a>
+    
+    </div>
+</div>

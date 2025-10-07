@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="page-header">
+                <h1 class="page-title"> Academic Calendar</h1>
+                <p class="page-subtitle">Important dates and events for the academic year</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Upcoming Events</h5>
+                </div>
+                <div class="card-body">
+                    {% if upcoming_events %}
+                        <div class="events-timeline">
+                            {% for event in upcoming_events %}
+                            <div class="event-item {% if event.is_important %}event-important{% endif %} p-3 border-bottom">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="event-content flex-grow-1">
+                                        <h6 class="event-title mb-1">
+                                            {{ event.title }}
+                                            {% if event.is_important %}
+                                            <span class="badge bg-danger ms-2">Important</span>
+                                            {% endif %}
+                                        </h6>
+                                        {% if event.description %}
+                                        <p class="event-desc text-muted mb-2">{{ event.description }}</p>
+                                        {% endif %}
+                                        <div class="event-meta">
+                                            <span class="badge 
+                                                {% if event.event_type == 'exam' %}bg-danger
+                                                {% elif event.event_type == 'lecture' %}bg-primary
+                                                {% elif event.event_type == 'break' %}bg-warning text-dark
+                                                {% elif event.event_type == 'holiday' %}bg-success
+                                                {% else %}bg-secondary{% endif %} me-2">
+                                                {{ event.get_event_type_display }}
+                                            </span>
+                                            <span class="text-primary">
+                                                {{ event.start_date|date:"M d, Y" }}
+                                                {% if event.end_date != event.start_date %}
+                                                - {{ event.end_date|date:"M d, Y" }}
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <p class="text-muted">No upcoming events scheduled.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
