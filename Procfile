@@ -1,1 +1,1 @@
-web: gunicorn napss_asis.wsgi
+web: gunicorn Abu_hub.wsgi
